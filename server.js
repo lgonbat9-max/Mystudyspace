@@ -1,40 +1,56 @@
+#!/usr/bin/env node
+
 const express = require('express');
 const path = require('path');
-const app = express();
+const fs = require('fs');
 
-// Configurar puerto
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware - Servir archivos estáticos desde el directorio raíz
+// Middleware
 app.use(express.static(path.join(__dirname)));
 
-// Logs para debugging
+// Logging middleware
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
     next();
 });
 
-// Ruta principal
+// Routes
 app.get('/', (req, res) => {
-    console.log('Sirviendo index.html desde raíz');
-    res.sendFile(path.join(__dirname, 'index.html'));
+    const indexPath = path.join(__dirname, 'index.html');
+    console.log(`Sirviendo: ${indexPath}`);
+    res.sendFile(indexPath);
 });
 
-// Manejo de rutas SPA - redirigir a index.html para todas las rutas no encontradas
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
+// SPA catch-all
 app.use((req, res) => {
-    console.log(`Ruta no encontrada: ${req.path}, redirigiendo a index.html`);
-    res.sendFile(path.join(__dirname, 'index.html'));
+    const indexPath = path.join(__dirname, 'index.html');
+    console.log(`404 - Redirigiendo ${req.path} a index.html`);
+    res.sendFile(indexPath);
 });
 
-// Manejo de errores
+// Error handler
 app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(500).sendFile(path.join(__dirname, 'index.html'));
+    console.error('Error:', err.message);
+    res.status(500).send('Error interno del servidor');
 });
 
-// Iniciar servidor
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Servidor ejecutándose en puerto ${PORT}`);
-    console.log(`📱 Accede a la aplicación en http://localhost:${PORT}`);
-    console.log(`📂 Sirviendo archivos estáticos desde: ${__dirname}`);
+// Start server
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Servidor iniciado en puerto ${PORT}`);
+    console.log(`📁 Sirviendo desde: ${__dirname}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM recibido, cerrando servidor...');
+    server.close(() => {
+        console.log('Servidor cerrado');
+        process.exit(0);
+    });
 });

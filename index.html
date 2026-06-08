@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyStudySpace - Tu plataforma de estudio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📚 MyStudySpace</h1>
+                <p class="subtitle">Tu espacio personalizado para estudiar</p>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-button active" data-tab="apuntes">
+                <span class="icon">📝</span>
+                <span>Apuntes</span>
+            </button>
+            <button class="tab-button" data-tab="flashcards">
+                <span class="icon">🎴</span>
+                <span>Flashcards</span>
+            </button>
+            <button class="tab-button" data-tab="temporizador">
+                <span class="icon">⏱️</span>
+                <span>Temporizador</span>
+            </button>
+            <button class="tab-button" data-tab="configuracion">
+                <span class="icon">⚙️</span>
+                <span>Configuración</span>
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+
+            <!-- TAB 1: APUNTES -->
+            <section id="apuntes" class="tab-pane active">
+                <div class="tab-container">
+                    <h2>Mis Apuntes y Archivos</h2>
+                    
+                    <!-- Selector de Asignatura -->
+                    <div class="subject-selector">
+                        <div class="input-group">
+                            <input type="text" id="newSubjectInput" placeholder="Nombre de nueva asignatura" class="input-field">
+                            <button id="addSubjectBtn" class="btn btn-primary">+ Agregar Asignatura</button>
+                        </div>
+                        <div id="subjectTabs" class="subject-tabs">
+                            <!-- Se llenarán dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Contenido de la Asignatura -->
+                    <div id="subjectContent" class="subject-content">
+                        <p class="empty-state">Selecciona o crea una asignatura para comenzar</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: FLASHCARDS -->
+            <section id="flashcards" class="tab-pane">
+                <div class="tab-container">
+                    <h2>Cuestionarios y Flashcards</h2>
+                    
+                    <!-- Selector de Asignatura para Flashcards -->
+                    <div class="flashcard-selector">
+                        <select id="fcSubjectSelect" class="input-field">
+                            <option value="">Selecciona una asignatura</option>
+                        </select>
+                    </div>
+
+                    <!-- Área de Flashcards -->
+                    <div id="flashcardArea" class="flashcard-area">
+                        <p class="empty-state">Selecciona una asignatura para ver flashcards</p>
+                    </div>
+
+                    <!-- Crear nueva Flashcard -->
+                    <div id="flashcardForm" class="flashcard-form" style="display: none;">
+                        <h3>Crear Nueva Flashcard</h3>
+                        <div class="form-group">
+                            <label>Pregunta:</label>
+                            <textarea id="fcQuestion" class="input-field" rows="3" placeholder="Escribe la pregunta"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Respuesta:</label>
+                            <textarea id="fcAnswer" class="input-field" rows="3" placeholder="Escribe la respuesta"></textarea>
+                        </div>
+                        <button id="saveFlashcardBtn" class="btn btn-primary">Guardar Flashcard</button>
+                        <button id="cancelFlashcardBtn" class="btn btn-secondary">Cancelar</button>
+                    </div>
+
+                    <!-- Botón para agregar flashcard -->
+                    <button id="addFlashcardBtn" class="btn btn-primary" style="display: none; margin-top: 20px;">+ Nueva Flashcard</button>
+                </div>
+            </section>
+
+            <!-- TAB 3: TEMPORIZADOR -->
+            <section id="temporizador" class="tab-pane">
+                <div class="tab-container">
+                    <h2>Temporizador de Estudio</h2>
+                    
+                    <div class="timer-container">
+                        <!-- Display del Temporizador -->
+                        <div class="timer-display-section">
+                            <div class="timer-display-wrapper">
+                                <div class="timer-background-preview" id="timerBgPreview"></div>
+                                <div class="timer-display">
+                                    <div id="timerValue" class="timer-value">25:00</div>
+                                    <p class="timer-label">minutos</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inputs para ajustar tiempo -->
+                        <div class="timer-inputs">
+                            <div class="input-group-timer">
+                                <label>Minutos:</label>
+                                <input type="number" id="timerMinutes" class="input-field-small" value="25" min="1" max="999">
+                            </div>
+                            <div class="input-group-timer">
+                                <label>Segundos:</label>
+                                <input type="number" id="timerSeconds" class="input-field-small" value="0" min="0" max="59">
+                            </div>
+                        </div>
+
+                        <!-- Controles -->
+                        <div class="timer-controls">
+                            <button id="startTimerBtn" class="btn btn-success">Iniciar</button>
+                            <button id="pauseTimerBtn" class="btn btn-warning" style="display: none;">Pausar</button>
+                            <button id="resetTimerBtn" class="btn btn-secondary">Reiniciar</button>
+                        </div>
+
+                        <!-- Personalización de fondo -->
+                        <div class="timer-customization">
+                            <h3>🎨 Personalizar Fondo del Temporizador</h3>
+                            
+                            <div class="customization-section">
+                                <h4>Foto de fondo</h4>
+                                <div class="timer-bg-upload-area" id="timerBgUploadArea">
+                                    <label class="file-upload-label">
+                                        <input type="file" id="timerBgInput" accept="image/*">
+                                        📁 Arrastra una foto aquí o haz clic
+                                    </label>
+                                </div>
+                                <button id="removeTimerBgBtn" class="btn btn-danger" style="display: none; margin-top: 10px;">
+                                    🗑️ Eliminar foto
+                                </button>
+                            </div>
+
+                            <div class="customization-section">
+                                <h4>Color de fondo personalizado</h4>
+                                <div class="input-group">
+                                    <input type="color" id="timerBgColor" class="color-input" value="#6366f1">
+                                    <button class="btn btn-primary" onclick="applyTimerBgColor()">Aplicar color</button>
+                                </div>
+                            </div>
+
+                            <div class="customization-section">
+                                <h4>Opacidad del fondo</h4>
+                                <div class="input-group">
+                                    <input type="range" id="timerBgOpacity" class="slider" min="0" max="100" value="100">
+                                    <span id="opacityValue">100%</span>
+                                </div>
+                            </div>
+
+                            <div class="customization-section">
+                                <h4>📝 Notas personalizadas</h4>
+                                <textarea id="timerNotes" class="input-field" rows="4" placeholder="Escribe notas, motivación o recordatorios para esta sesión..."></textarea>
+                                <button id="saveTimerNotesBtn" class="btn btn-primary" onclick="saveTimerNotes()">💾 Guardar notas</button>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de Alarma -->
+                        <div class="alarm-settings">
+                            <h3>🔔 Alarma</h3>
+                            <div class="input-group">
+                                <label>
+                                    <input type="checkbox" id="alarmEnabled" checked>
+                                    Habilitar alarma
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <label>Volumen:</label>
+                                <input type="range" id="alarmVolume" class="slider" min="0" max="100" value="70">
+                                <span id="volumeValue">70%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: CONFIGURACIÓN -->
+            <section id="configuracion" class="tab-pane">
+                <div class="tab-container">
+                    <h2>Configuración</h2>
+                    
+                    <!-- Tema -->
+                    <div class="settings-section">
+                        <h3>Apariencia</h3>
+                        <div class="form-group">
+                            <label>Tema:</label>
+                            <select id="themeSelect" class="input-field">
+                                <option value="light">Claro</option>
+                                <option value="dark">Oscuro</option>
+                                <option value="auto">Automático</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Color de Fondo Personalizado:</label>
+                            <input type="color" id="bgColor" class="color-input" value="#ffffff">
+                            <p class="help-text">Personaliza el color de fondo de tu interfaz</p>
+                        </div>
+                    </div>
+
+                    <!-- Gestión de Datos -->
+                    <div class="settings-section">
+                        <h3>Datos</h3>
+                        <p class="help-text">Tus datos se almacenan localmente en tu navegador</p>
+                        <button id="exportDataBtn" class="btn btn-primary">Descargar Datos</button>
+                        <button id="clearDataBtn" class="btn btn-danger">Limpiar Todo (⚠️ No se puede deshacer)</button>
+                    </div>
+
+                    <!-- Información -->
+                    <div class="settings-section">
+                        <h3>Información</h3>
+                        <p><strong>MyStudySpace v1.1</strong></p>
+                        <p>Plataforma de estudio personal con almacenamiento local y personalización avanzada</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
